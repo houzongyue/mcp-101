@@ -3,6 +3,8 @@
 import pytest
 from fastmcp import Client
 from fastmcp.client.transports import PythonStdioTransport
+from mcp.client.sse import sse_client
+from mcp import ClientSession
 from server_stdio import mcp_stdio
 from server_sse import mcp_sse
 
@@ -32,3 +34,15 @@ async def test_stdio_subprocess():
     async with Client(transport) as client:
         result = await client.call_tool("add", {"a": 2, "b": 3})
         assert result.data == 5
+
+
+# SSE network test: requires server running on localhost:8000
+# Start server first: uv run python server_sse.py
+@pytest.mark.asyncio
+async def test_sse_network():
+    """Test SSE server over network (requires server running)"""
+    async with sse_client("http://127.0.0.1:8000/sse") as (read, write):
+        async with ClientSession(read, write) as session:
+            await session.initialize()
+            result = await session.call_tool("multiply", {"a": 2, "b": 3})
+            assert result.content[0].text == "6"
