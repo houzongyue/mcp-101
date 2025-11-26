@@ -1,0 +1,15 @@
+[project]
+name = "mcp-demo"
+version = "0.1.0"
+description = "FastMCP demo project"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+]

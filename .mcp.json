@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "demo-stdio": {
+      "command": "uv",
+      "args": ["run", "python", "server_stdio.py"]
+    },
+    "demo-sse": {
+      "type": "sse",
+      "url": "http://localhost:8000/sse"
+    }
+  }
+}
