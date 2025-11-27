@@ -36,11 +36,21 @@ async def test_stdio_subprocess():
         assert result.data == 5
 
 
-# SSE network test: requires server running on localhost:8000
-# Start server first: uv run python server_http.py --transport sse
+# Network tests: require server running on localhost:8000
+# Streamable HTTP: uv run python server_http.py
+# SSE: uv run python server_http.py --transport sse
+@pytest.mark.asyncio
+async def test_http_network():
+    """Test HTTP server over network with Streamable HTTP (requires server running)"""
+    async with Client("http://127.0.0.1:8000/mcp") as client:
+        result = await client.call_tool("multiply", {"a": 2, "b": 3})
+        assert result.data == 6
+
+
 @pytest.mark.asyncio
 async def test_sse_network():
     """Test HTTP server over network with SSE transport (requires server running)"""
+    # Note: fastmcp.Client has bug with SSE, use low-level mcp.client.sse instead
     async with sse_client("http://127.0.0.1:8000/sse") as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()

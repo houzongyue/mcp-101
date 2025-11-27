@@ -31,7 +31,11 @@ uv sync
 # Without HTTP server (in-memory + subprocess)
 uv run pytest test_server.py -q -k "not network"
 
-# With HTTP server (all tests, use SSE for test compatibility)
+# With Streamable HTTP server (test_http_network)
+uv run python server_http.py  # in another terminal
+uv run pytest test_server.py -q -k "not sse"
+
+# With SSE server (test_sse_network)
 uv run python server_http.py --transport sse  # in another terminal
 uv run pytest test_server.py -q
 ```
@@ -102,20 +106,26 @@ codex mcp remove demo-stdio
 codex mcp remove demo-http
 ```
 
+## Test with Gemini CLI
+
+The project includes `.gemini/settings.json` (project-level config) with two server configs
+
+Usage is similar to Claude Code and Codex CLI.
+
 ## HTTP transport comparison
 
-| Transport | Endpoint | Claude Code | Codex CLI |
-|-----------|----------|-------------|-----------|
-| SSE | `/sse` | ✅ | ❓ |
-| Streamable HTTP | `/mcp` | ✅ | ✅ |
+| Transport | Endpoint | Claude Code | Codex CLI | Gemini CLI |
+|-----------|----------|-------------|-----------|------------|
+| SSE | `/sse` | ✅ | ❓ | ❓ |
+| Streamable HTTP | `/mcp` | ✅ | ✅ | ✅ |
 
 ## MCP config comparison
 
-| | Claude Code | Codex CLI |
-|---|-------------|-----------|
-| Global config | `~/.claude/settings.json` | `~/.codex/config.toml` |
-| Project config | `.mcp.json` ✅ | ❌ Not supported |
-| CLI command | `claude mcp add` | `codex mcp add` |
+| | Claude Code | Codex CLI | Gemini CLI |
+|---|-------------|-----------|------------|
+| Global config | `~/.claude/settings.json` | `~/.codex/config.toml` | `~/.gemini/settings.json` |
+| Project config | `.mcp.json` | ❌ Not supported | `.gemini/settings.json` |
+| CLI command | `claude mcp add` | `codex mcp add` | `gemini mcp add` |
 
 ## Global config (Claude Code)
 
