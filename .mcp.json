@@ -4,9 +4,9 @@
       "command": "uv",
       "args": ["run", "python", "server_stdio.py"]
     },
-    "demo-sse": {
-      "type": "sse",
-      "url": "http://localhost:8000/sse"
+    "demo-http": {
+      "type": "http",
+      "url": "http://127.0.0.1:8000/mcp"
     }
   }
 }

@@ -6,7 +6,7 @@ from fastmcp.client.transports import PythonStdioTransport
 from mcp.client.sse import sse_client
 from mcp import ClientSession
 from server_stdio import mcp_stdio
-from server_sse import mcp_sse
+from server_http import mcp_http
 
 
 # In-memory tests: Client connects directly to MCP instance, no real server process
@@ -19,9 +19,9 @@ async def test_stdio_in_memory():
 
 
 @pytest.mark.asyncio
-async def test_sse_in_memory():
-    """Test SSE server (in-memory)"""
-    async with Client(mcp_sse) as client:
+async def test_http_in_memory():
+    """Test HTTP server (in-memory)"""
+    async with Client(mcp_http) as client:
         result = await client.call_tool("multiply", {"a": 2, "b": 3})
         assert result.data == 6
 
@@ -37,10 +37,10 @@ async def test_stdio_subprocess():
 
 
 # SSE network test: requires server running on localhost:8000
-# Start server first: uv run python server_sse.py
+# Start server first: uv run python server_http.py --transport sse
 @pytest.mark.asyncio
 async def test_sse_network():
-    """Test SSE server over network (requires server running)"""
+    """Test HTTP server over network with SSE transport (requires server running)"""
     async with sse_client("http://127.0.0.1:8000/sse") as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()
